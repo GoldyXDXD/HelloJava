@@ -1,5 +1,6 @@
 import java.math.BigDecimal;
 import java.sql.*;
+import java.util.Scanner;
 
 public class SQLHelper {
     public static void fullReport(String url, String user, String password) {
@@ -23,19 +24,17 @@ public class SQLHelper {
             System.out.println(ex);
         }
     }
-    public static void shortReport(String url, String user, String password) {
+    public static void addRevenue(String url, String user, String password, Scanner scanner) {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver").getDeclaredConstructor().newInstance();
             try (Connection conn = DriverManager.getConnection(url, user, password)) {
                 Statement statement = conn.createStatement();
-                ResultSet resultSet = statement.executeQuery("SELECT SUM(Money) AS Expense_SUM FROM base WHERE Type='Expense'");
-                BigDecimal expenseSum = resultSet.getBigDecimal("Expense_SUM");
-                resultSet = statement.executeQuery("SELECT SUM(Money) AS Revenue_SUM FROM base WHERE Type='Expense'");
-                BigDecimal revenueSum = resultSet.getBigDecimal("Revenue_SUM");
-                BigDecimal profit = revenueSum.subtract(expenseSum);
-                System.out.println("Revenue sum: " + revenueSum);
-                System.out.println("Expense sum: " + expenseSum);
-                System.out.println("Profit: " + profit);
+                System.out.println("Enter Description: ");
+                String description = scanner.next();
+                System.out.println("Enter sum of revenue: ");
+                BigDecimal sum = scanner.nextBigDecimal();
+                statement.executeUpdate("INSERT base(Description, Type, Money) VALUES ('" + description + "', " + "'Revenue', " + sum + ")");
+                System.out.println("DB updated");
             }
         }
         catch (Exception ex) {
@@ -43,23 +42,17 @@ public class SQLHelper {
             System.out.println(ex);
         }
     }
-    public static void addRevenue(String url, String user, String password) {
+    public static void addExpense(String url, String user, String password, Scanner scanner) {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver").getDeclaredConstructor().newInstance();
             try (Connection conn = DriverManager.getConnection(url, user, password)) {
                 Statement statement = conn.createStatement();
-            }
-        }
-        catch (Exception ex) {
-            System.out.println("Something went wrong...");
-            System.out.println(ex);
-        }
-    }
-    public static void addExpense(String url, String user, String password) {
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver").getDeclaredConstructor().newInstance();
-            try (Connection conn = DriverManager.getConnection(url, user, password)) {
-                Statement statement = conn.createStatement();
+                System.out.println("Enter Description: ");
+                String description = scanner.next();
+                System.out.println("Enter sum of expense: ");
+                BigDecimal sum = scanner.nextBigDecimal();
+                statement.executeUpdate("INSERT base(Description, Type, Money) VALUES ('" + description + "', " + "'Expense', " + sum + ")");
+                System.out.println("DB updated");
             }
         }
         catch (Exception ex) {
