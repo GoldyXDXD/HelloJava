@@ -13,20 +13,17 @@ public class NN {
         String password = scanner.nextLine();
         SQLHelper.checkConnection(url, user, password);
         for (;;) {
-            System.out.println("Select action: see short report(0), see report(1), add revenue(2), add expense(3), exit(4))");
+            System.out.println("Select action: see DB table(1), add revenue(2), add expense(3), exit(4))");
             int action = scanner.nextInt();
             switch (action){
-                case 0:
-                    SQLHelper.shortReport(url, user, password);
-                    break;
                 case 1:
                     SQLHelper.fullReport(url,user,password);
                     break;
                 case 2:
-                    SQLHelper.addRevenue(url, user, password);
+                    SQLHelper.addRevenue(url, user, password, scanner);
                     break;
                 case 3:
-                    SQLHelper.addExpense(url, user, password);
+                    SQLHelper.addExpense(url, user, password, scanner);
                     break;
                 case 4:
                     System.exit(0);
