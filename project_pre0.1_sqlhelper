@@ -1,5 +1,6 @@
 import java.math.BigDecimal;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class SQLHelper {
@@ -30,7 +31,14 @@ public class SQLHelper {
             try (Connection conn = DriverManager.getConnection(url, user, password)) {
                 Statement statement = conn.createStatement();
                 System.out.println("Enter Description: ");
-                String description = scanner.next();
+                String description = "";
+                int i = 0;
+                while (scanner.hasNextLine() && i  < 2) {
+                    description = scanner.nextLine();
+                    if (description != null && description.equals("") != true) {
+                        break;
+                    }
+                }
                 System.out.println("Enter sum of revenue: ");
                 BigDecimal sum = scanner.nextBigDecimal();
                 statement.executeUpdate("INSERT base(Description, Type, Money) VALUES ('" + description + "', " + "'Revenue', " + sum + ")");
@@ -48,7 +56,14 @@ public class SQLHelper {
             try (Connection conn = DriverManager.getConnection(url, user, password)) {
                 Statement statement = conn.createStatement();
                 System.out.println("Enter Description: ");
-                String description = scanner.next();
+                String description = "";
+                int i = 0;
+                while (scanner.hasNextLine() && i  < 2) {
+                    description = scanner.nextLine();
+                    if (description != null && description.equals("") != true) {
+                        break;
+                    }
+                }
                 System.out.println("Enter sum of expense: ");
                 BigDecimal sum = scanner.nextBigDecimal();
                 statement.executeUpdate("INSERT base(Description, Type, Money) VALUES ('" + description + "', " + "'Expense', " + sum + ")");
@@ -65,6 +80,57 @@ public class SQLHelper {
             Class.forName("com.mysql.cj.jdbc.Driver").getDeclaredConstructor().newInstance();
             try(Connection connection = DriverManager.getConnection(url,user,password)) {
                 System.out.println("Connection to DB succesfull");
+            }
+        }
+        catch (Exception ex) {
+            System.out.println("Connection failed");
+            System.out.println(ex);
+        }
+    }
+    public static void shortReport(String url, String user, String password) {
+        try{
+            Class.forName("com.mysql.cj.jdbc.Driver").getDeclaredConstructor().newInstance();
+            try(Connection connection = DriverManager.getConnection(url,user,password)) {
+                PreparedStatement statement = connection.prepareStatement("select sum(Money) from base where Type='Revenue'");
+                ResultSet result = statement.executeQuery();
+                result.next();
+                String sum = result.getString(1);
+                System.out.println("Revenue sum: " + sum);
+                BigDecimal revenue = new BigDecimal(sum);
+                statement = connection.prepareStatement("select sum(Money) from base where Type='Expense'");
+                result = statement.executeQuery();
+                result.next();
+                sum = result.getString(1);
+                System.out.println("Expense sum: " + sum);
+                BigDecimal expense = new BigDecimal(sum);
+                BigDecimal profit = revenue.subtract(expense);
+                System.out.println("Profit: " + profit);
+            }
+        }
+        catch (Exception ex) {
+            System.out.println("Connection failed");
+            System.out.println(ex);
+        }
+    }
+    public static void expenseStats(String url, String user, String password) {
+        try{
+            Class.forName("com.mysql.cj.jdbc.Driver").getDeclaredConstructor().newInstance();
+            try(Connection connection = DriverManager.getConnection(url,user,password)) {
+                Statement statement = connection.createStatement();
+                ResultSet resultSet = statement.executeQuery("SELECT DISTINCT Description FROM base WHERE Type='Expense'");
+                ArrayList<String> help = new ArrayList<>();
+                ArrayList<Integer> sum = new ArrayList<>();
+                while (resultSet.next()) {
+                    help.add(resultSet.getString(1));
+                }
+                for (int j = 0; j < help.size(); j++) {
+                    resultSet = statement.executeQuery("SELECT SUM(Money) from base WHERE Description='" + help.get(j)+"'");
+                    resultSet.next();
+                    sum.add(resultSet.getInt(1));
+                }
+                for (int j = 0; j < help.size(); j++) {
+                    System.out.println(help.get(j) + ": " + sum.get(j));
+                }
             }
         }
         catch (Exception ex) {
