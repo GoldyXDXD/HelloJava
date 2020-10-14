@@ -1,4 +1,5 @@
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -119,17 +120,55 @@ public class SQLHelper {
                 Statement statement = connection.createStatement();
                 ResultSet resultSet = statement.executeQuery("SELECT DISTINCT Description FROM base WHERE Type='Expense'");
                 ArrayList<String> help = new ArrayList<>();
-                ArrayList<Integer> sum = new ArrayList<>();
+                ArrayList<BigDecimal> sum = new ArrayList<>();
                 while (resultSet.next()) {
                     help.add(resultSet.getString(1));
                 }
                 for (int j = 0; j < help.size(); j++) {
                     resultSet = statement.executeQuery("SELECT SUM(Money) from base WHERE Description='" + help.get(j)+"'");
                     resultSet.next();
-                    sum.add(resultSet.getInt(1));
+                    sum.add(resultSet.getBigDecimal(1));
+                }
+                PreparedStatement statement1 = connection.prepareStatement("select sum(Money) from base where Type='Expense'");
+                ResultSet result = statement1.executeQuery();
+                result.next();
+                BigDecimal sum1 = result.getBigDecimal(1);
+                System.out.println("Expense sum: " + sum1);
+                BigDecimal decimalProcent = new BigDecimal("100");
+                for (int j = 0; j < help.size(); j++) {
+                    System.out.println(help.get(j) + ": " + decimalProcent.multiply((sum.get(j)).divide(sum1, 2, RoundingMode.HALF_UP)) + "%");
+                }
+            }
+        }
+        catch (Exception ex) {
+            System.out.println("Connection failed");
+            System.out.println(ex);
+        }
+    }
+    public static void revenueStats(String url, String user, String password) {
+        try{
+            Class.forName("com.mysql.cj.jdbc.Driver").getDeclaredConstructor().newInstance();
+            try(Connection connection = DriverManager.getConnection(url,user,password)) {
+                Statement statement = connection.createStatement();
+                ResultSet resultSet = statement.executeQuery("SELECT DISTINCT Description FROM base WHERE Type='Revenue'");
+                ArrayList<String> help = new ArrayList<>();
+                ArrayList<BigDecimal> sum = new ArrayList<>();
+                while (resultSet.next()) {
+                    help.add(resultSet.getString(1));
                 }
                 for (int j = 0; j < help.size(); j++) {
-                    System.out.println(help.get(j) + ": " + sum.get(j));
+                    resultSet = statement.executeQuery("SELECT SUM(Money) from base WHERE Description='" + help.get(j) + "'");
+                    resultSet.next();
+                    sum.add(resultSet.getBigDecimal(1));
+                }
+                PreparedStatement statement1 = connection.prepareStatement("select sum(Money) from base where Type='Revenue'");
+                ResultSet result = statement1.executeQuery();
+                result.next();
+                BigDecimal sum1 = result.getBigDecimal(1);
+                System.out.println("Revenue sum: " + sum1);
+                BigDecimal decimalProcent = new BigDecimal("100");
+                for (int j = 0; j < help.size(); j++) {
+                    System.out.println(help.get(j) + ": " + decimalProcent.multiply((sum.get(j)).divide(sum1, 2, RoundingMode.HALF_UP)) + "%");
                 }
             }
         }
