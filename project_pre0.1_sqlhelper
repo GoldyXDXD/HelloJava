@@ -34,7 +34,7 @@ public class SQLHelper {
                 System.out.println("Enter Description: ");
                 String description = "";
                 int i = 0;
-                while (scanner.hasNextLine() && i  < 2) {
+                while (true) {
                     description = scanner.nextLine();
                     if (description != null && description.equals("") != true) {
                         break;
@@ -59,7 +59,7 @@ public class SQLHelper {
                 System.out.println("Enter Description: ");
                 String description = "";
                 int i = 0;
-                while (scanner.hasNextLine() && i  < 2) {
+                while (true) {
                     description = scanner.nextLine();
                     if (description != null && description.equals("") != true) {
                         break;
@@ -86,6 +86,7 @@ public class SQLHelper {
         catch (Exception ex) {
             System.out.println("Connection failed");
             System.out.println(ex);
+            System.exit(0);
         }
     }
     public static void shortReport(String url, String user, String password) {
@@ -109,7 +110,7 @@ public class SQLHelper {
             }
         }
         catch (Exception ex) {
-            System.out.println("Connection failed");
+            System.out.println("Something went wrong...");
             System.out.println(ex);
         }
     }
@@ -141,7 +142,7 @@ public class SQLHelper {
             }
         }
         catch (Exception ex) {
-            System.out.println("Connection failed");
+            System.out.println("Something went wrong...");
             System.out.println(ex);
         }
     }
@@ -173,7 +174,89 @@ public class SQLHelper {
             }
         }
         catch (Exception ex) {
-            System.out.println("Connection failed");
+            System.out.println("Something went wrong...");
+            System.out.println(ex);
+        }
+    }
+    public static void search(String url, String user, String password, Scanner scanner) {
+        try{
+            Class.forName("com.mysql.cj.jdbc.Driver").getDeclaredConstructor().newInstance();
+            try(Connection connection = DriverManager.getConnection(url,user,password)) {
+                Statement statement = connection.createStatement();
+                System.out.println("Select: search with description (1), date (2), description and date(3)");
+                int action = scanner.nextInt();
+                ResultSet resultSet;
+                switch (action) {
+                    case 1:
+                        System.out.println("Enter description: ");
+                        String desc = "";
+                        while (true) {
+                            desc = scanner.nextLine();
+                            if (desc != null && desc.equals("") != true) {
+                                break;
+                            }
+                        }
+                        resultSet = statement.executeQuery("SELECT * from base where Description LIKE'" + desc +"%'");
+                        while (resultSet.next()) {
+                            int id = resultSet.getInt("ID");
+                            String description = resultSet.getString("Description");
+                            String type = resultSet.getString("Type");
+                            BigDecimal money = resultSet.getBigDecimal("Money");
+                            Timestamp date = resultSet.getTimestamp("Date");
+                            System.out.println(id+ "." + description + " - " + type + " - " + money + " - " + date);
+                        }
+                        break;
+                    case 2:
+                        System.out.println("Enter date (yyyy-mm-dd): ");
+                        String date1 = "";
+                        while (true) {
+                            date1 = scanner.nextLine();
+                            if (date1 != null && date1.equals("") != true) {
+                                break;
+                            }
+                        }
+                        resultSet = statement.executeQuery("SELECT * from base where Date LIKE '" + date1 +"%'");
+                        while (resultSet.next()) {
+                            int id = resultSet.getInt("ID");
+                            String description = resultSet.getString("Description");
+                            String type = resultSet.getString("Type");
+                            BigDecimal money = resultSet.getBigDecimal("Money");
+                            Timestamp date = resultSet.getTimestamp("Date");
+                            System.out.println(id+ "." + description + " - " + type + " - " + money + " - " + date);
+                        }
+                        break;
+                    case 3:
+                        System.out.println("Enter description: ");
+                        String desc1 = "";
+                        while (true) {
+                            desc1 = scanner.nextLine();
+                            if (desc1 != null && desc1.equals("") != true) {
+                                break;
+                            }
+                        }
+                        System.out.println("Enter date(yyyy-mm-dd): ");
+                        String date2 = "";
+                        while (true) {
+                            date2 = scanner.nextLine();
+                            if (date2 != null && date2.equals("") != true) {
+                                break;
+                            }
+                        }
+                        resultSet = statement.executeQuery("SELECT * from base where Date LIKE '" + date2 +"%' AND Description LIKE'" + desc1 + "%'");
+                        while (resultSet.next()) {
+                            int id = resultSet.getInt("ID");
+                            String description = resultSet.getString("Description");
+                            String type = resultSet.getString("Type");
+                            BigDecimal money = resultSet.getBigDecimal("Money");
+                            Timestamp date = resultSet.getTimestamp("Date");
+                            System.out.println(id+ "." + description + " - " + type + " - " + money + " - " + date);
+                        }
+                        break;
+                }
+            }
+        }
+        catch (Exception ex) {
+            System.out.println("Something went wrong...");
             System.out.println(ex);
         }
     }
