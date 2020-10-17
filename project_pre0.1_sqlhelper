@@ -34,11 +34,8 @@ public class SQLHelper {
                 System.out.println("Enter Description: ");
                 String description = "";
                 int i = 0;
-                while (true) {
+                while (description == null || description.equals("") == true) {
                     description = scanner.nextLine();
-                    if (description != null && description.equals("") != true) {
-                        break;
-                    }
                 }
                 System.out.println("Enter sum of revenue: ");
                 BigDecimal sum = scanner.nextBigDecimal();
@@ -59,11 +56,8 @@ public class SQLHelper {
                 System.out.println("Enter Description: ");
                 String description = "";
                 int i = 0;
-                while (true) {
+                while (description == null || description.equals("") == true) {
                     description = scanner.nextLine();
-                    if (description != null && description.equals("") != true) {
-                        break;
-                    }
                 }
                 System.out.println("Enter sum of expense: ");
                 BigDecimal sum = scanner.nextBigDecimal();
@@ -183,18 +177,15 @@ public class SQLHelper {
             Class.forName("com.mysql.cj.jdbc.Driver").getDeclaredConstructor().newInstance();
             try(Connection connection = DriverManager.getConnection(url,user,password)) {
                 Statement statement = connection.createStatement();
-                System.out.println("Select: search with description (1), date (2), description and date(3)");
+                System.out.println("Select: search with description (1), date (2), type(3), description and date(4), type and date(5)");
                 int action = scanner.nextInt();
                 ResultSet resultSet;
                 switch (action) {
                     case 1:
                         System.out.println("Enter description: ");
                         String desc = "";
-                        while (true) {
+                        while (desc == null || desc.equals("") == true) {
                             desc = scanner.nextLine();
-                            if (desc != null && desc.equals("") != true) {
-                                break;
-                            }
                         }
                         resultSet = statement.executeQuery("SELECT * from base where Description LIKE'" + desc +"%'");
                         while (resultSet.next()) {
@@ -207,15 +198,17 @@ public class SQLHelper {
                         }
                         break;
                     case 2:
-                        System.out.println("Enter date (yyyy-mm-dd): ");
-                        String date1 = "";
-                        while (true) {
-                            date1 = scanner.nextLine();
-                            if (date1 != null && date1.equals("") != true) {
-                                break;
-                            }
+                        System.out.println("Enter first date (yyyy-mm-dd): ");
+                        String dateStart = "";
+                        String dateFinish = "";
+                        while (dateStart == null || dateStart.equals("") == true) {
+                            dateStart = scanner.nextLine();
                         }
-                        resultSet = statement.executeQuery("SELECT * from base where Date LIKE '" + date1 +"%'");
+                        System.out.println("Enter second date (yyyy-mm-dd): ");
+                        while (dateFinish == null || dateFinish.equals("") == true) {
+                            dateFinish = scanner.nextLine();
+                        }
+                        resultSet = statement.executeQuery("SELECT * from base where date between '" + dateStart +" 00:00:00' AND '" + dateFinish + " 23:59:59'");
                         while (resultSet.next()) {
                             int id = resultSet.getInt("ID");
                             String description = resultSet.getString("Description");
@@ -226,23 +219,50 @@ public class SQLHelper {
                         }
                         break;
                     case 3:
+                        System.out.println("Select type: revenue(1) or expense(2):");
+                        int choice = scanner.nextInt();
+                        switch (choice){
+                            case 1:
+                                resultSet = statement.executeQuery("SELECT * from base where Type='revenue'");
+                                while (resultSet.next()) {
+                                    int id = resultSet.getInt("ID");
+                                    String description = resultSet.getString("Description");
+                                    String type = resultSet.getString("Type");
+                                    BigDecimal money = resultSet.getBigDecimal("Money");
+                                    Timestamp date = resultSet.getTimestamp("Date");
+                                    System.out.println(id+ "." + description + " - " + type + " - " + money + " - " + date);
+                                }
+                                break;
+                            case 2:
+                                resultSet = statement.executeQuery("SELECT * from base where Type='Expense'");
+                                while (resultSet.next()) {
+                                    int id = resultSet.getInt("ID");
+                                    String description = resultSet.getString("Description");
+                                    String type = resultSet.getString("Type");
+                                    BigDecimal money = resultSet.getBigDecimal("Money");
+                                    Timestamp date = resultSet.getTimestamp("Date");
+                                    System.out.println(id+ "." + description + " - " + type + " - " + money + " - " + date);
+                                }
+                                break;
+                        }
+                        break;
+                    case 4:
                         System.out.println("Enter description: ");
                         String desc1 = "";
-                        while (true) {
+                        while (desc1 == null || desc1.equals("") == true) {
                             desc1 = scanner.nextLine();
-                            if (desc1 != null && desc1.equals("") != true) {
-                                break;
-                            }
                         }
-                        System.out.println("Enter date(yyyy-mm-dd): ");
-                        String date2 = "";
-                        while (true) {
-                            date2 = scanner.nextLine();
-                            if (date2 != null && date2.equals("") != true) {
-                                break;
-                            }
+                        System.out.println("Enter first date(yyyy-mm-dd): ");
+                        String dateStart1 = "";
+                        String dateFinish1 = "";
+                        while (dateStart1 == null || dateStart1.equals("") == true) {
+                            dateStart1 = scanner.nextLine();
                         }
-                        resultSet = statement.executeQuery("SELECT * from base where Date LIKE '" + date2 +"%' AND Description LIKE'" + desc1 + "%'");
+                        System.out.println("Enter second date: ");
+                        while (dateFinish1 == null || dateFinish1.equals("") == true) {
+                            dateFinish1 = scanner.nextLine();
+                        }
+                        resultSet = statement.executeQuery("SELECT * from base where  Description LIKE'" + desc1 + "%' and date between '" + dateStart1 + " 00:00:00' AND '" + dateFinish1 + " 23:59:59'");
                         while (resultSet.next()) {
                             int id = resultSet.getInt("ID");
                             String description = resultSet.getString("Description");
@@ -252,6 +272,43 @@ public class SQLHelper {
                             System.out.println(id+ "." + description + " - " + type + " - " + money + " - " + date);
                         }
                         break;
+                    case 5:
+                        System.out.println("Select type: revenue(1) or expense(2):");
+                        choice = scanner.nextInt();
+                        System.out.println("Enter first date:");
+                        String dateStart2 = "";
+                        String dateFinish2 = "";
+                        while (dateStart2 == null || dateStart2.equals("") == true) {
+                            dateStart2 = scanner.nextLine();
+                        }
+                        System.out.println("Enter second date (yyyy-mm-dd): ");
+                        while (dateFinish2 == null || dateFinish2.equals("") == true) {
+                            dateFinish2 = scanner.nextLine();
+                        }
+                        switch (choice) {
+                            case 1:
+                                resultSet = statement.executeQuery("SELECT * from base where Type='Revenue' and date between '" + dateStart2 + " 00:00:00' AND '" + dateFinish2 + " 23:59:59'");
+                                while (resultSet.next()) {
+                                    int id = resultSet.getInt("ID");
+                                    String description = resultSet.getString("Description");
+                                    String type = resultSet.getString("Type");
+                                    BigDecimal money = resultSet.getBigDecimal("Money");
+                                    Timestamp date = resultSet.getTimestamp("Date");
+                                    System.out.println(id+ "." + description + " - " + type + " - " + money + " - " + date);
+                                }
+                                break;
+                            case 2:
+                                resultSet = statement.executeQuery("SELECT * from base where Type='Expense' and date between '" + dateStart2 + " 00:00:00' AND '" + dateFinish2 + " 23:59:59'");
+                                while (resultSet.next()) {
+                                    int id = resultSet.getInt("ID");
+                                    String description = resultSet.getString("Description");
+                                    String type = resultSet.getString("Type");
+                                    BigDecimal money = resultSet.getBigDecimal("Money");
+                                    Timestamp date = resultSet.getTimestamp("Date");
+                                    System.out.println(id+ "." + description + " - " + type + " - " + money + " - " + date);
+                                }
+                                break;
+                        }
                 }
             }
         }
