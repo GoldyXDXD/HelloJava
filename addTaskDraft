@@ -1,0 +1,13 @@
+System.out.println("Select mission's purpose: description(1) or type(2):");
+                        int action1 = scanner.nextInt();
+                        switch (action1) {
+                            case 1:
+                                System.out.println("Enter mission's description:");
+                                String description = "";
+                                while (description == null || description.equals("") == true) {
+                                    description = scanner.nextLine();
+                                }
+                                System.out.println("Enter ");
+                                break;
+                        }
+                        break;
