@@ -2,6 +2,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Scanner;
 
 public class SQLHelper {
@@ -17,15 +18,15 @@ public class SQLHelper {
                     String type = resultSet.getString("Type");
                     BigDecimal money = resultSet.getBigDecimal("Money");
                     Timestamp date = resultSet.getTimestamp("Date");
-                    System.out.println(id+ "." + description + " - " + type + " - " + money + " - " + date);
+                    System.out.println(id + "." + description + " - " + type + " - " + money + " - " + date);
                 }
             }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             System.out.println("Something went wrong...");
             System.out.println(ex);
         }
     }
+
     public static void addRevenue(String url, String user, String password, Scanner scanner) {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver").getDeclaredConstructor().newInstance();
@@ -42,12 +43,12 @@ public class SQLHelper {
                 statement.executeUpdate("INSERT base(Description, Type, Money) VALUES ('" + description + "', " + "'Revenue', " + sum + ")");
                 System.out.println("DB updated");
             }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             System.out.println("Something went wrong...");
             System.out.println(ex);
         }
     }
+
     public static void addExpense(String url, String user, String password, Scanner scanner) {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver").getDeclaredConstructor().newInstance();
@@ -64,29 +65,29 @@ public class SQLHelper {
                 statement.executeUpdate("INSERT base(Description, Type, Money) VALUES ('" + description + "', " + "'Expense', " + sum + ")");
                 System.out.println("DB updated");
             }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             System.out.println("Something went wrong...");
             System.out.println(ex);
         }
     }
+
     public static void checkConnection(String url, String user, String password) {
-        try{
+        try {
             Class.forName("com.mysql.cj.jdbc.Driver").getDeclaredConstructor().newInstance();
-            try(Connection connection = DriverManager.getConnection(url,user,password)) {
+            try (Connection connection = DriverManager.getConnection(url, user, password)) {
                 System.out.println("Connection to DB succesfull");
             }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             System.out.println("Connection failed");
             System.out.println(ex);
             System.exit(0);
         }
     }
+
     public static void shortReport(String url, String user, String password) {
-        try{
+        try {
             Class.forName("com.mysql.cj.jdbc.Driver").getDeclaredConstructor().newInstance();
-            try(Connection connection = DriverManager.getConnection(url,user,password)) {
+            try (Connection connection = DriverManager.getConnection(url, user, password)) {
                 PreparedStatement statement = connection.prepareStatement("select sum(Money) from base where Type='Revenue'");
                 ResultSet result = statement.executeQuery();
                 result.next();
@@ -102,16 +103,16 @@ public class SQLHelper {
                 BigDecimal profit = revenue.subtract(expense);
                 System.out.println("Profit: " + profit);
             }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             System.out.println("Something went wrong...");
             System.out.println(ex);
         }
     }
+
     public static void expenseStats(String url, String user, String password) {
-        try{
+        try {
             Class.forName("com.mysql.cj.jdbc.Driver").getDeclaredConstructor().newInstance();
-            try(Connection connection = DriverManager.getConnection(url,user,password)) {
+            try (Connection connection = DriverManager.getConnection(url, user, password)) {
                 Statement statement = connection.createStatement();
                 ResultSet resultSet = statement.executeQuery("SELECT DISTINCT Description FROM base WHERE Type='Expense'");
                 ArrayList<String> help = new ArrayList<>();
@@ -120,7 +121,7 @@ public class SQLHelper {
                     help.add(resultSet.getString(1));
                 }
                 for (int j = 0; j < help.size(); j++) {
-                    resultSet = statement.executeQuery("SELECT SUM(Money) from base WHERE Description='" + help.get(j)+"'");
+                    resultSet = statement.executeQuery("SELECT SUM(Money) from base WHERE Description='" + help.get(j) + "'");
                     resultSet.next();
                     sum.add(resultSet.getBigDecimal(1));
                 }
@@ -134,16 +135,16 @@ public class SQLHelper {
                     System.out.println(help.get(j) + ": " + decimalProcent.multiply((sum.get(j)).divide(sum1, 2, RoundingMode.HALF_UP)) + "%");
                 }
             }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             System.out.println("Something went wrong...");
             System.out.println(ex);
         }
     }
+
     public static void revenueStats(String url, String user, String password) {
-        try{
+        try {
             Class.forName("com.mysql.cj.jdbc.Driver").getDeclaredConstructor().newInstance();
-            try(Connection connection = DriverManager.getConnection(url,user,password)) {
+            try (Connection connection = DriverManager.getConnection(url, user, password)) {
                 Statement statement = connection.createStatement();
                 ResultSet resultSet = statement.executeQuery("SELECT DISTINCT Description FROM base WHERE Type='Revenue'");
                 ArrayList<String> help = new ArrayList<>();
@@ -166,16 +167,16 @@ public class SQLHelper {
                     System.out.println(help.get(j) + ": " + decimalProcent.multiply((sum.get(j)).divide(sum1, 2, RoundingMode.HALF_UP)) + "%");
                 }
             }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             System.out.println("Something went wrong...");
             System.out.println(ex);
         }
     }
+
     public static void search(String url, String user, String password, Scanner scanner) {
-        try{
+        try {
             Class.forName("com.mysql.cj.jdbc.Driver").getDeclaredConstructor().newInstance();
-            try(Connection connection = DriverManager.getConnection(url,user,password)) {
+            try (Connection connection = DriverManager.getConnection(url, user, password)) {
                 Statement statement = connection.createStatement();
                 System.out.println("Select: search with description (1), date (2), type(3), description and date(4), type and date(5)");
                 int action = scanner.nextInt();
@@ -187,14 +188,14 @@ public class SQLHelper {
                         while (desc == null || desc.equals("") == true) {
                             desc = scanner.nextLine();
                         }
-                        resultSet = statement.executeQuery("SELECT * from base where Description LIKE'" + desc +"%'");
+                        resultSet = statement.executeQuery("SELECT * from base where Description LIKE'" + desc + "%'");
                         while (resultSet.next()) {
                             int id = resultSet.getInt("ID");
                             String description = resultSet.getString("Description");
                             String type = resultSet.getString("Type");
                             BigDecimal money = resultSet.getBigDecimal("Money");
                             Timestamp date = resultSet.getTimestamp("Date");
-                            System.out.println(id+ "." + description + " - " + type + " - " + money + " - " + date);
+                            System.out.println(id + "." + description + " - " + type + " - " + money + " - " + date);
                         }
                         break;
                     case 2:
@@ -208,20 +209,20 @@ public class SQLHelper {
                         while (dateFinish == null || dateFinish.equals("") == true) {
                             dateFinish = scanner.nextLine();
                         }
-                        resultSet = statement.executeQuery("SELECT * from base where date between '" + dateStart +" 00:00:00' AND '" + dateFinish + " 23:59:59'");
+                        resultSet = statement.executeQuery("SELECT * from base where date between '" + dateStart + " 00:00:00' AND '" + dateFinish + " 23:59:59'");
                         while (resultSet.next()) {
                             int id = resultSet.getInt("ID");
                             String description = resultSet.getString("Description");
                             String type = resultSet.getString("Type");
                             BigDecimal money = resultSet.getBigDecimal("Money");
                             Timestamp date = resultSet.getTimestamp("Date");
-                            System.out.println(id+ "." + description + " - " + type + " - " + money + " - " + date);
+                            System.out.println(id + "." + description + " - " + type + " - " + money + " - " + date);
                         }
                         break;
                     case 3:
                         System.out.println("Select type: revenue(1) or expense(2):");
                         int choice = scanner.nextInt();
-                        switch (choice){
+                        switch (choice) {
                             case 1:
                                 resultSet = statement.executeQuery("SELECT * from base where Type='revenue'");
                                 while (resultSet.next()) {
@@ -230,7 +231,7 @@ public class SQLHelper {
                                     String type = resultSet.getString("Type");
                                     BigDecimal money = resultSet.getBigDecimal("Money");
                                     Timestamp date = resultSet.getTimestamp("Date");
-                                    System.out.println(id+ "." + description + " - " + type + " - " + money + " - " + date);
+                                    System.out.println(id + "." + description + " - " + type + " - " + money + " - " + date);
                                 }
                                 break;
                             case 2:
@@ -241,7 +242,7 @@ public class SQLHelper {
                                     String type = resultSet.getString("Type");
                                     BigDecimal money = resultSet.getBigDecimal("Money");
                                     Timestamp date = resultSet.getTimestamp("Date");
-                                    System.out.println(id+ "." + description + " - " + type + " - " + money + " - " + date);
+                                    System.out.println(id + "." + description + " - " + type + " - " + money + " - " + date);
                                 }
                                 break;
                         }
@@ -269,12 +270,10 @@ public class SQLHelper {
                             String type = resultSet.getString("Type");
                             BigDecimal money = resultSet.getBigDecimal("Money");
                             Timestamp date = resultSet.getTimestamp("Date");
-                            System.out.println(id+ "." + description + " - " + type + " - " + money + " - " + date);
+                            System.out.println(id + "." + description + " - " + type + " - " + money + " - " + date);
                         }
                         break;
                     case 5:
-                        System.out.println("Select type: revenue(1) or expense(2):");
-                        choice = scanner.nextInt();
                         System.out.println("Enter first date:");
                         String dateStart2 = "";
                         String dateFinish2 = "";
@@ -285,6 +284,8 @@ public class SQLHelper {
                         while (dateFinish2 == null || dateFinish2.equals("") == true) {
                             dateFinish2 = scanner.nextLine();
                         }
+                        System.out.println("Select type: revenue(1) or expense(2):");
+                        choice = scanner.nextInt();
                         switch (choice) {
                             case 1:
                                 resultSet = statement.executeQuery("SELECT * from base where Type='Revenue' and date between '" + dateStart2 + " 00:00:00' AND '" + dateFinish2 + " 23:59:59'");
@@ -294,7 +295,7 @@ public class SQLHelper {
                                     String type = resultSet.getString("Type");
                                     BigDecimal money = resultSet.getBigDecimal("Money");
                                     Timestamp date = resultSet.getTimestamp("Date");
-                                    System.out.println(id+ "." + description + " - " + type + " - " + money + " - " + date);
+                                    System.out.println(id + "." + description + " - " + type + " - " + money + " - " + date);
                                 }
                                 break;
                             case 2:
@@ -305,14 +306,47 @@ public class SQLHelper {
                                     String type = resultSet.getString("Type");
                                     BigDecimal money = resultSet.getBigDecimal("Money");
                                     Timestamp date = resultSet.getTimestamp("Date");
-                                    System.out.println(id+ "." + description + " - " + type + " - " + money + " - " + date);
+                                    System.out.println(id + "." + description + " - " + type + " - " + money + " - " + date);
                                 }
                                 break;
                         }
                 }
             }
+        } catch (Exception ex) {
+            System.out.println("Something went wrong...");
+            System.out.println(ex);
         }
-        catch (Exception ex) {
+    }
+
+    public static void readMe() {
+        System.out.println("Привет, Женечка. Как дела?!1!!1!?!?!?!?!?1!!!");
+    }
+
+    public static void tasksManager(String url, String user, String password, Scanner scanner) {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver").getDeclaredConstructor().newInstance();
+            try (Connection connection = DriverManager.getConnection(url, user, password)) {
+                Statement statement = connection.createStatement();
+                System.out.println("Select action with tasks: see tasks(1), ...");
+                int action = scanner.nextInt();
+                switch (action) {
+                    case 1:
+                        ResultSet resultSet = statement.executeQuery("SELECT * from tasks");
+                        while (resultSet.next()) {
+                            int id = resultSet.getInt("ID");
+                            String description = resultSet.getString("Description");
+                            Date firstDate = resultSet.getDate("First_date");
+                            Date secondDate = resultSet.getDate("Second_date");
+                            String status = resultSet.getString("Status");
+                            System.out.println(id + "." + description + " - " + firstDate + " - " + secondDate + " - " + status);
+                            break;
+                        }
+                    default:
+                        SQLHelper.tasksManager(url, user, password, scanner);
+                        break;
+                }
+            }
+        } catch (Exception ex) {
             System.out.println("Something went wrong...");
             System.out.println(ex);
         }
