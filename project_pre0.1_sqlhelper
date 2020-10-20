@@ -351,4 +351,26 @@ public class SQLHelper {
             System.out.println(ex);
         }
     }
+    public static void analytics(String url, String user, String password) {
+        try{
+            Class.forName("com.mysql.cj.jdbc.Driver").getDeclaredConstructor().newInstance();
+            try (Connection connection = DriverManager.getConnection(url, user, password)) {
+                Statement statement = connection.createStatement();
+                ResultSet resultSet = statement.executeQuery("SELECT SUM(Money from base where type='Expense' AND Date>=current_date()");
+                BigDecimal result = resultSet.getBigDecimal("1");
+                System.out.println("Today's expenses: " + result);
+                resultSet = statement.executeQuery("SELECT SUM(Money) from base where type='Expense' AND Date>=DATE_ADD(current_date(), INTERVAL -7 DAY)");
+                result = resultSet.getBigDecimal("1");
+                System.out.println("This week's expenses: " + result);
+                resultSet = statement.executeQuery("SELECT SUM(Money) from base where type='Expense' AND Date>=DATE_ADD(current_date(), INTERVAL -1 MONTH)");
+                result = resultSet.getBigDecimal("1");
+                System.out.println("This month's expenses: " + result);
+
+            }
+        }
+        catch (Exception ex) {
+            System.out.println("Something went wrong...");
+            System.out.println(ex);
+        }
+    }
 }
