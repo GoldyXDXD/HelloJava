@@ -356,16 +356,33 @@ public class SQLHelper {
             Class.forName("com.mysql.cj.jdbc.Driver").getDeclaredConstructor().newInstance();
             try (Connection connection = DriverManager.getConnection(url, user, password)) {
                 Statement statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery("SELECT SUM(Money from base where type='Expense' AND Date>=current_date()");
-                BigDecimal result = resultSet.getBigDecimal("1");
+                ResultSet resultSet = statement.executeQuery("SELECT SUM(Money) from base where type='Expense' AND Date>=current_date()");
+                resultSet.next();
+                BigDecimal result = resultSet.getBigDecimal("SUM(Money)");
                 System.out.println("Today's expenses: " + result);
                 resultSet = statement.executeQuery("SELECT SUM(Money) from base where type='Expense' AND Date>=DATE_ADD(current_date(), INTERVAL -7 DAY)");
-                result = resultSet.getBigDecimal("1");
+                resultSet.next();
+                result = resultSet.getBigDecimal("SUM(Money)");
                 System.out.println("This week's expenses: " + result);
                 resultSet = statement.executeQuery("SELECT SUM(Money) from base where type='Expense' AND Date>=DATE_ADD(current_date(), INTERVAL -1 MONTH)");
-                result = resultSet.getBigDecimal("1");
+                resultSet.next();
+                result = resultSet.getBigDecimal("SUM(Money)");
                 System.out.println("This month's expenses: " + result);
-
+                resultSet = statement.executeQuery("SELECT Date from base where ID=1");
+                resultSet.next();
+                Timestamp firstTime = resultSet.getTimestamp("Date");
+                resultSet = statement.executeQuery("SELECT DATEDIFF(current_date(), '" +  firstTime + "')");
+                resultSet.next();
+                BigDecimal diff = resultSet.getBigDecimal("DATEDIFF(current_date(), '" +  firstTime + "')");
+                diff = (diff.divide(new BigDecimal("30"), 0, BigDecimal.ROUND_HALF_DOWN)).add(new BigDecimal("1"));
+                resultSet = statement.executeQuery("SELECT SUM(Money) from base where Type='Revenue'");
+                resultSet.next();
+                result = resultSet.getBigDecimal("SUM(Money)");
+                System.out.println("Average monthly revenue: "+ result.divide(diff, 2, BigDecimal.ROUND_HALF_UP));
+                resultSet = statement.executeQuery("SELECT SUM(Money) from base where Type='Expense'");
+                resultSet.next();
+                result = resultSet.getBigDecimal("SUM(Money)");
+                System.out.println("Average monthly expense: "+ result.divide(diff, 2, BigDecimal.ROUND_HALF_UP));
             }
         }
         catch (Exception ex) {
