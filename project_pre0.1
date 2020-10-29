@@ -58,11 +58,20 @@ public class NN {
                     SQLHelper.analytics(url, user, password);
                     break;
                 case 10:
-                    System.out.println("Enter currency: ");
-                    String currency = Support.enter(scanner);
-                    LiveResponseDemo.sendLiveRequest(currency);
-                    LiveResponseDemo.httpClient.close();
-                    new BufferedReader(new InputStreamReader(System.in)).readLine();
+                    System.out.println("Enter action: choose currency(1), see supported currencies(2): ");
+                    int choice = scanner.nextInt();
+                    switch (choice) {
+                        case 1:
+                            System.out.println("Enter currency: ");
+                            String currency = Support.enter(scanner);
+                            LiveResponseDemo.sendLiveRequest(currency);
+                            LiveResponseDemo.httpClient.close();
+                            new BufferedReader(new InputStreamReader(System.in)).readLine();
+                            break;
+                        case 2:
+                            CurrenciesTable.showCurrenciesTable();
+                            break;
+                    }
                     break;
                 case 11:
                     SQLHelper.readMe();
