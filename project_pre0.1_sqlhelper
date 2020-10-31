@@ -323,33 +323,7 @@ public class SQLHelper {
     }
 
     public static void tasksManager(String url, String user, String password, Scanner scanner) {
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver").getDeclaredConstructor().newInstance();
-            try (Connection connection = DriverManager.getConnection(url, user, password)) {
-                Statement statement = connection.createStatement();
-                System.out.println("Select action with tasks: see tasks(1), ...");
-                int action = scanner.nextInt();
-                switch (action) {
-                    case 1:
-                        ResultSet resultSet = statement.executeQuery("SELECT * from tasks");
-                        while (resultSet.next()) {
-                            int id = resultSet.getInt("ID");
-                            String description = resultSet.getString("Description");
-                            Date firstDate = resultSet.getDate("First_date");
-                            Date secondDate = resultSet.getDate("Second_date");
-                            String status = resultSet.getString("Status");
-                            System.out.println(id + "." + description + " - " + firstDate + " - " + secondDate + " - " + status);
-                            break;
-                        }
-                    default:
-                        SQLHelper.tasksManager(url, user, password, scanner);
-                        break;
-                }
-            }
-        } catch (Exception ex) {
-            System.out.println("Something went wrong...");
-            System.out.println(ex);
-        }
+        System.out.println("Doesn't work right now");
     }
     public static void analytics(String url, String user, String password) {
         try{
@@ -390,3 +364,4 @@ public class SQLHelper {
             System.out.println(ex);
         }
     }
+}
