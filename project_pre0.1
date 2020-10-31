@@ -27,7 +27,7 @@ public class NN {
         SQLHelper.checkConnection(url, user, password);
         System.out.println("WARNING: MOST OF THE FUNCTIONS WORK ONLY WITH WITH RUB");
         for (;;) {
-            System.out.println("Select action: see short report(1), see DB table(2), add revenue(3), add expense(4), expenses stats(5), revenue stats(6), search(7), task manager(8) - will work later, analytics(9), show USD rate(10), readMe(11), exit(12)");
+            System.out.println("Select action: see short report(1), see DB table(2), add revenue(3), add expense(4), expenses stats(5), revenue stats(6), search(7), task manager(8) - will work later, analytics(9), show USD rate(10), credit calculator(11), readMe(12), exit(13)");
             int action = scanner.nextInt();
             switch (action){
                 case 1:
@@ -74,9 +74,12 @@ public class NN {
                     }
                     break;
                 case 11:
-                    SQLHelper.readMe();
+                    CreditCalculator.annuityCalculator(scanner);
                     break;
                 case 12:
+                    SQLHelper.readMe();
+                    break;
+                case 13:
                     System.exit(0);
             }
         }
