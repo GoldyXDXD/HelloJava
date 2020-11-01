@@ -1,6 +1,7 @@
 import java.math.BigDecimal;
 import java.util.Scanner;
 public class CreditCalculator {
+    //считает количество дней, которое понадобится для погашения кредита
     public static void annuityCalculator (Scanner scanner) {
         System.out.println("Enter loan sum: ");
         BigDecimal loanSum = scanner.nextBigDecimal();
