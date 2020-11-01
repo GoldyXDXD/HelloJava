@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.Scanner;
 
 public class SQLHelper {
+    //метод, показывающий полную финансовую таблицу (с затратами и расходами)
     public static void fullReport(String url, String user, String password) {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver").getDeclaredConstructor().newInstance();
@@ -26,7 +27,8 @@ public class SQLHelper {
             System.out.println(ex);
         }
     }
-
+    
+    //метод, добавляющий в таблицу затраты
     public static void addRevenue(String url, String user, String password, Scanner scanner) {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver").getDeclaredConstructor().newInstance();
@@ -48,7 +50,8 @@ public class SQLHelper {
             System.out.println(ex);
         }
     }
-
+    
+    //метод, добавляющий в таблицу расходы
     public static void addExpense(String url, String user, String password, Scanner scanner) {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver").getDeclaredConstructor().newInstance();
@@ -70,7 +73,8 @@ public class SQLHelper {
             System.out.println(ex);
         }
     }
-
+    
+    //проверка подключения к бд
     public static void checkConnection(String url, String user, String password) {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver").getDeclaredConstructor().newInstance();
@@ -83,7 +87,8 @@ public class SQLHelper {
             System.exit(0);
         }
     }
-
+    
+    //краткий отчет (метод показывает суммму всех затрат, доходов и общую прибыль)
     public static void shortReport(String url, String user, String password) {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver").getDeclaredConstructor().newInstance();
@@ -108,7 +113,8 @@ public class SQLHelper {
             System.out.println(ex);
         }
     }
-
+    
+    //статистика расходов (метод показывает, на что тратились деньги, сколько их тратилось и процент от общей суммы у каждой статьи расходов) 
     public static void expenseStats(String url, String user, String password) {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver").getDeclaredConstructor().newInstance();
@@ -140,7 +146,8 @@ public class SQLHelper {
             System.out.println(ex);
         }
     }
-
+    
+    //статистика расходов (метод показывает, откуда брались деньги, сколько money было заработано) 
     public static void revenueStats(String url, String user, String password) {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver").getDeclaredConstructor().newInstance();
@@ -172,7 +179,8 @@ public class SQLHelper {
             System.out.println(ex);
         }
     }
-
+    
+    //показывает отфильтрованную пользователем бд
     public static void search(String url, String user, String password, Scanner scanner) {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver").getDeclaredConstructor().newInstance();
@@ -317,14 +325,18 @@ public class SQLHelper {
             System.out.println(ex);
         }
     }
-
+    
+    //привет, Женя
     public static void readMe() {
         System.out.println("Привет, Женечка. Как дела?!1!!1!?!?!?!?!?1!!!");
     }
-
+    
+    //метод, реализующий задания (пока не работает)
     public static void tasksManager(String url, String user, String password, Scanner scanner) {
         System.out.println("Doesn't work right now");
     }
+    
+    //показывает денежные операции за последний день, неделю, месяц
     public static void analytics(String url, String user, String password) {
         try{
             Class.forName("com.mysql.cj.jdbc.Driver").getDeclaredConstructor().newInstance();
