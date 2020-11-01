@@ -10,15 +10,18 @@ import java.util.Set;
 
 public class NN {
     public static void main(String[] args) throws IOException {
+        //код, благодаря которому логи не показываются в консоли
         Set<String> loggers = new HashSet<>(Arrays.asList("org.apache.http", "groovyx.net.http"));
-
         Set<String> artifactoryLoggers = new HashSet<>(Arrays.asList("org.apache.http", "groovyx.net.http"));
         for(String log:artifactoryLoggers) {
             ch.qos.logback.classic.Logger artLogger = (ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger(log);
             artLogger.setLevel(ch.qos.logback.classic.Level.INFO);
             artLogger.setAdditive(false);
         }
+        
         Scanner scanner = new Scanner(System.in);
+        
+        //получение доступа к бд
         String url = "jdbc:mysql://localhost/core?serverTimezone=Europe/Moscow&useSSL=false";
         System.out.println("Введите имя пользователя БД:");
         String user = scanner.nextLine();
@@ -26,7 +29,9 @@ public class NN {
         String password = scanner.nextLine();
         SQLHelper.checkConnection(url, user, password);
         System.out.println("WARNING: MOST OF THE FUNCTIONS WORK ONLY WITH WITH RUB");
-        for (;;) {
+        boolean  flag = true;
+        //меню приложения
+        while(flag) {
             System.out.println("Select action: see short report(1), see DB table(2), add revenue(3), add expense(4), expenses stats(5), revenue stats(6), search(7), task manager(8) - will work later, analytics(9), show USD rate(10), credit calculator(11), readMe(12), exit(13)");
             int action = scanner.nextInt();
             switch (action){
